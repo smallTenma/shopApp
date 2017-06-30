@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/style.css" />
+    <script type="text/javascript" src="../../public/Js/jquery.js"></script>
+   <!--  <script type="text/javascript" src="../../public/Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../../public/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/Js/ckform.js"></script>
+    <script type="text/javascript" src="../../public/Js/common.js"></script> 
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form action="http://localhost/xuankexitong/index.php?class=Func&action=geren_update" method="post" >
+
+<input type="hidden" name="id" value="" />
+<table class="table table-bordered table-hover ">
+    <tr>
+        <td width="10%" class="tableleft">学号</td>
+        <td><input type="text" name="usernameId" readonly="readonly"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">姓名</td>
+        <td ><input type="text" name="studentName" value=""/></td>
+    </tr>  
+    <tr>
+        <td class="tableleft">性别</td>
+        <td ><input type="text" name="studentSex" value=""/></td>
+    </tr> 
+    <tr>
+        <td class="tableleft">生日</td>
+        <td ><input type="datetime" name="studentBirthday" value=""/></td>
+    </tr> 
+    <tr>
+        <td class="tableleft" >学院</td>
+        <td >
+        	<input type="text" name="departmentName" readonly="readonly"/>
+       			
+        </td>
+    </tr> 
+    <tr>
+        <td class="tableleft">专业</td>
+        <td >
+        	<input type="text" name="majorName" readonly="readonly"/>
+
+        </td>
+    </tr> 
+    <tr>
+        <td class="tableleft">面貌</td>
+        <td ><input type="text" name="politicalStatus" value=""/></td>
+    </tr> 
+    
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <input onclick="javascript:return confirm('您确认要保存修改内容吗？')" id="update" class="btn btn-primary" type="submit" value="保存"></input> &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+        </td>
+    </tr>
+</table>
+</form>
+</body>
+</html>
+<script>
+    $(function () {       
+		$('#backid').click(function(){
+				window.location.href="information.html";
+		 });
+		
+ 		$.ajax({
+ 			type:"get",
+ 			url:"http://localhost/xuankexitong/index.php?class=Func&action=geren_information",
+ 			success:function(res){
+ 				console.log(res);
+ 				$("input[name='usernameId']").val(res[0]["usernameId"]);
+ 				$("input[name='studentName']").val(res[0]["studentName"]);
+ 				$("input[name='studentSex']").val(res[0]["studentSex"]);
+ 				$("input[name='studentBirthday']").val(res[0]["studentBirthday"]);
+ 				//alert(res[1][0][0]);
+ 				$("input[name='departmentName']").val(res[0]["departmentName"]);
+ 				$("input[name='majorName']").val(res[0]["majorName"]);
+ 				$("input[name='politicalStatus']").val(res[0]["politicalStatus"]);
+ 			}
+ 		});
+ 		
+ 		function queren(){
+ 			if(confirm("确定保存修改内容吗")==0){
+ 				return false;
+ 			}
+ 		}
+    });
+</script>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/style.css" />
+    <script type="text/javascript" src="../../public/Js/jquery.js"></script>
+   <!--  <script type="text/javascript" src="../../public/Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../../public/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/Js/ckform.js"></script>
+    <script type="text/javascript" src="../../public/Js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+        .hongye{
+        	color: red;
+        }
+        #cur{
+        	color: red;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get">  
+    学生名称：
+    <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;  
+    <button type="submit" class="btn btn-primary">查询</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>生日</th>
+        <th>院系</th>
+        <th>专业</th>
+        <th>政治面貌</th>
+        <th id="ee">管理操作</th>
+    </tr>
+    </thead>
+	<tbody id="data"></tbody>
+</table>
+<div class="inline pull-right page">
+	共<span id="rows">a</span> 条记录 <span id="cur">b</span>/<span id="pages">c</span> 页
+	<a href="javascript:void(0)" id="pre">上一页</a> 
+	<span id="ye"></span>
+	<a href="javascript:void(0)" id="after">下一页</a>
+	<input type="text" name="cur"  style="width: 50px;" id="tianxie">
+	<a href="javascript:void(0)" id="tiaozhuan">跳转</a>
+</div>
+</body>
+</html>
+<script>
+	$(function() {
+
+		$('#addnew').click(function() {
+
+			window.location.href = "add.html";
+		});
+		var row = 2; //每页查多少条
+		var cur = 1;
+		var pages;
+		//var url1="http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur="+cur+"&row="+row+"";
+		//进入请求
+		$.ajax({
+			type: "get",
+			data:{},
+			url: "http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur=" + cur + "&row=" + row + "",
+			success: function(res) {
+				var rows = res[1];
+				pages = res[0];
+				cur = res[3];
+				$("#rows").text(rows);
+				$("#pages").text(pages);
+				$("#cur").text(cur);
+				console.log(res);
+				//alert(res[2][1]["usernameId"]);
+				for(var i = 0; i < row; i++) {
+					var obj = res[2][i];
+					//console.log(res);
+					var del = "<a class='shan' for='" + obj[7] + "' href='javascript:void(0)'>编辑</a>";
+					$("#data").append("<tr><td>" + obj[0] + "</td><td>" + obj[1] + "</td><td>" + obj[2] + "</td><td>" + obj[3] + "</td><td>" + obj[4] + "</td><td>" + obj[5] + "</td><td>" + obj[6] + "</td><td>" + del + "</td>");
+				}
+				for(var j = 1; j <= $("#pages").text(); j++) {
+					if(j == cur) {
+						$("#ye").append("<a href='javascript:void(0)' class='yefuhao hongye'>" + j + "</a>");
+					} else {
+						$("#ye").append("<a href='javascript:void(0)' class='yefuhao' >" + j + "</a>");
+					}
+				}
+			}
+		});
+		//上一页跳转
+		$("#pre").click(function() {
+			$("#tianxie").val("");
+			if(cur <= 1) {
+				alert("当前已到顶部");
+				return false;
+			} else {
+				cur -= 1;
+			}
+			$("#data tr").remove();
+			$.ajax({
+				type: "get",
+				url: "http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur=" + cur + "&row=" + row + "",
+				success: function(res) {
+					var rows = res[1];
+					var pages = res[0];
+					cur = res[3];
+					$("#rows").text(rows);
+					$("#pages").text(pages);
+					$("#cur").text(cur);
+					console.log(res);
+					//alert(res[2][1]["usernameId"]);
+					$(".yefuhao").removeClass("hongye");
+					if($(".yefuhao").val() == cur) {
+						$(this).addClass("hongye");
+					}
+					for(var i = 0; i < row; i++) {
+						var obj = res[2][i];
+						//console.log(res);
+						var del = "<a class='shan' for='" + obj[7] + "' href='javascript:void(0)'>编辑</a>";
+						$("#data").append("<tr><td>" + obj[0] + "</td><td>" + obj[1] + "</td><td>" + obj[2] + "</td><td>" + obj[3] + "</td><td>" + obj[4] + "</td><td>" + obj[5] + "</td><td>" + obj[6] + "</td><td>" + del + "</td>");
+					}
+				}
+			});
+		})
+
+		//页码号跳转
+		$(document).on('click', '.yefuhao', function() {
+			$("#tianxie").val("");
+			cur = $(this).text();
+			console.log(cur);
+			$(this).css("color", "red !important");
+			$("#data tr").remove();
+			$.ajax({
+				type: "get",
+				url: "http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur=" + cur + "&row=" + row + "",
+				success: function(res) {
+					var rows = res[1];
+					var pages = res[0];
+					cur = res[3];
+					$("#rows").text(rows);
+					$("#pages").text(pages);
+					$("#cur").text(cur);
+					console.log(res);
+					//alert(res[2][1]["usernameId"]);
+					for(var i = 0; i < row; i++) {
+						var obj = res[2][i];
+						//console.log(res);
+						var del = "<a class='shan' for='" + obj[7] + "' href='javascript:void(0)'>编辑</a>";
+						$("#data").append("<tr><td>" + obj[0] + "</td><td>" + obj[1] + "</td><td>" + obj[2] + "</td><td>" + obj[3] + "</td><td>" + obj[4] + "</td><td>" + obj[5] + "</td><td>" + obj[6] + "</td><td>" + del + "</td>");
+					}
+				}
+			});
+
+		})
+		//下一页跳转
+		$("#after").click(function() {
+			$("#tianxie").val("");
+			if($("#cur").text() >= $("#pages").text()) {
+				alert("当前以是最后一页");
+				return false;
+			}
+			if($("#cur").text() < $("#pages").text()) {
+				var shu = parseInt($("#cur").text())
+				//alert($("#cur").text());
+				cur = shu + 1;
+			}
+
+			$("#data tr").remove();
+			$.ajax({
+				type: "get",
+				url: "http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur=" + cur + "&row=" + row + "",
+				success: function(res) {
+					cur = res[3];
+					var rows = res[1];
+					var pages = res[0];
+					$("#rows").text(rows);
+					$("#pages").text(pages);
+					$("#cur").text(cur);
+					console.log(res);
+					//alert(res[2][1]["usernameId"]);
+					for(var i = 0; i < row; i++) {
+						var obj = res[2][i];
+						//console.log(res);
+						var del = "<a class='shan' for='" + obj[7] + "' href='javascript:void(0)'>编辑</a>";
+						$("#data").append("<tr><td>" + obj[0] + "</td><td>" + obj[1] + "</td><td>" + obj[2] + "</td><td>" + obj[3] + "</td><td>" + obj[4] + "</td><td>" + obj[5] + "</td><td>" + obj[6] + "</td><td>" + del + "</td>");
+					}
+				}
+			});
+		})
+		//选择跳转
+		$("#tiaozhuan").click(function() {
+			//$("#tianxie").val("");
+			if($("#tianxie").val() <= $("#pages").text()) {
+				cur = $("#tianxie").val();
+				$("#data tr").remove();
+				$("#cur").text(cur);
+			} else {
+				alert("没有该页");
+				return false;
+			}
+			$.ajax({
+				type: "get",
+				url: "http://localhost/xuankexitong/index.php?class=Func&action=fenye&cur=" + cur + "&row=" + row + "",
+				success: function(res) {
+					var rows = res[1];
+					var pages = res[0];
+					cur = res[3];
+					$("#rows").text(rows);
+					$("#pages").text(pages);
+					$("#cur").text(cur);
+					console.log(res);
+					//alert(res[2][1]["usernameId"]);
+					for(var i = 0; i < row; i++) {
+						var obj = res[2][i];
+						//console.log(res);
+						var del = "<a class='shan' for='" + obj[7] + "' href='javascript:void(0)'>编辑</a>";
+						$("#data").append("<tr><td>" + obj[0] + "</td><td>" + obj[1] + "</td><td>" + obj[2] + "</td><td>" + obj[3] + "</td><td>" + obj[4] + "</td><td>" + obj[5] + "</td><td>" + obj[6] + "</td><td>" + del + "</td>");
+					}
+				}
+			});
+
+		})
+
+		$(document).on('click', '.shan', function() {
+			 location.href="edit.html?"+"txt="+encodeURI($(this).attr("for"));
+		})
+		
+
+		function del(id) {
+
+			if(confirm("确定要删除吗？")) {
+
+				var url = "index.html";
+
+				window.location.href = url;
+
+			}
+		}
+
+	});
+</script>

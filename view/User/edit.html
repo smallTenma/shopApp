@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/style.css" />
+    <script type="text/javascript" src="../../public/Js/jquery.js"></script>
+   <!--  <script type="text/javascript" src="../../public/Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../../public/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/Js/ckform.js"></script>
+    <script type="text/javascript" src="../../public/Js/common.js"></script>
+
+ 
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form action="../../index.php?class=Func&action=course_update" method="post" class="definewidth m20">
+<input type="hidden" name="id" value="{$user.id}" />
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft" >课程编号</td>
+            <td><input type="text" name="course_id" readonly="true" /></td>
+        </tr>
+        <tr>
+            <td class="tableleft">课程名称</td>
+            <td><input type="text" name="courseName"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">任课教师</td>
+            <td>
+            	<select name="teacherName" id="teacherName"> 
+            		
+            	</select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tableleft">学分</td>
+            <td><input type="text" name="credit" /></td>
+        </tr>
+        <tr>
+            <td class="tableleft">上课时间</td>
+            <td><input type="text" name="courseTime" /></td>
+        </tr>
+        <tr>
+            <td class="tableleft">已选人数</td>
+            <td><input type="text" name="courseAction" disabled="true"/></td>
+        </tr>
+       
+        
+        <tr>
+            <td class="tableleft"></td>
+            <td>
+                <button type="submit" class="btn btn-primary" type="button">保存</button>				 
+                &nbsp;&nbsp;<button type="button" class="btn btn-success" name="backid" id="backid">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+<script>
+    $(function () {       
+		$('#backid').click(function(){
+				window.location.href="index.html";
+		 });
+
+		var loc = location.href;
+ 		var n1 = loc.length;//地址的总长度
+  		var n2 = loc.indexOf("=");//取得=号的位置
+ 		var id = decodeURI(loc.substr(n2+1, n1-n2));//从=号后面的内容
+ 		
+ 		$.ajax({
+			type:"get",
+			url:"http://localhost/xuankexitong/index.php?class=Func&action=course_xinxi&id="+id+"",
+			success:function(res){
+				console.log(res);
+				for(var i=0;i<res[1].length;i++){
+					$("#teacherName").append("<option value="+res[1][i][0]+">"+res[1][i][1]+"</option>")
+				}
+				$("input[name='course_id']").val(res[0][0][0]);
+				$("input[name='courseName']").val(res[0][0][1]);
+				$("input[name='teacherName']").val(res[0][0][2]);
+				$("#teacherName option[value="+res[0][0][6]+"]").attr("selected", true);
+				$("input[name='courseTime']").val(res[0][0][4]);
+				$("input[name='credit']").val(res[0][0][3]);
+				$("input[name='courseAction']").val(res[0][0][5]);
+			}
+		});
+    });
+</script>

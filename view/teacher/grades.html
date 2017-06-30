@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/style.css" />
+    <script type="text/javascript" src="../../public/Js/jquery.js"></script>
+    <!-- <script type="text/javascript" src="../../public/Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../../public/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/Js/ckform.js"></script>
+    <script type="text/javascript" src="../../public/Js/common.js"></script>
+
+	  	<link rel="stylesheet" href="../../public/tanchu/reveal.css">	
+
+
+		<script src="http://www.jq22.com/jquery/jquery-1.6.2.js"></script>
+
+		<script type="text/javascript" src="../../public/tanchu/jquery.reveal.js"></script>
+
+		
+
+		<style type="text/css">
+
+			/*body { font-family: "HelveticaNeue","Helvetica-Neue", "Helvetica", "Arial", sans-serif; }*/
+			.big-link { display:block;  }
+
+		</style>
+
+ 
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<form id="chengji" action="#" method="post">
+<table class="table table-bordered table-hover definewidth m10">
+    <thead>
+    <tr>
+        <th>姓名</th>
+        <th>课程名称</th>
+        <th>任课教师</th>
+        <th>当前成绩</th>
+		<th>录入成绩<th>
+    </tr>
+    </thead>
+    <tbody id="data">
+    	
+    </tbody>
+	<tfoot>
+		<tr>
+			<td colspan="5">
+				<button type="button" class="btn btn-success" id="addgrades">录入成绩</button>
+			</td>
+		</tr>
+	</tfoot>  
+</table>
+</form>
+	</body>
+</html>
+<script type="text/javascript">
+	var arr=[];
+	var arr1=[];
+	$(function(){
+		$.ajax({
+			type:"get",
+			url:"http://localhost/xuankexitong/index.php?class=Func&action=course_student",
+			success:function(res){
+				console.log(res);
+				for(var i=0;i<res.length;i++){
+					$("#data").append("<tr ><td class='student' for='"+res[i][3]+"'style='cursor: pointer;color: royalblue;'><a href='#' data-reveal-id='myModal' class='big-link'>" + res[i][0] + "</a></td><td>" + res[i][1] + "</td><td >" + res[i][2] + "</td><td>"+res[i][4]+"</td><td><input class='grades' type='text' name='grades'/></td></tr>");
+					arr.push(res[i][5]);
+				}
+				console.log(arr);
+				$("#addgrades").click(function(){
+					var cishu=$("#chengji");
+					//alert(cishu.length);
+					for(var j;j<cishu.length;j++){
+						arr1.push(cichu.elements[j].value);
+					}
+					console.log(arr1);
+					$.ajax({
+						type:"get",
+						url:"http://localhost/xuankexitong/index.php?class=Func&action=teacher_grades&arr="+arr+"",
+						success:function(obj){
+							
+						}
+					});
+				})
+				
+			}
+
+		});
+		
+	})
+	
+</script>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../public/Css/style.css" />
+    <script type="text/javascript" src="../../public/Js/jquery.js"></script>
+    <!-- <script type="text/javascript" src="../../public/Js/jquery.sorted.js"></script> -->
+    <script type="text/javascript" src="../../public/Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../public/Js/ckform.js"></script>
+    <script type="text/javascript" src="../../public/Js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+		input{
+			width: 130px;
+		}
+		select{
+			width:120px;
+		}
+    </style>
+</head>
+<body>
+<form action="../../index.php?class=Func&action=addSmessage" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+    	<thead>
+        <tr>
+            <td width="10%" class="tableleft">设置学号</td>
+            <td><input type="text" name="studentNum"/></td>
+            <td width="10%" class="tableleft">登陆密码</td>
+            <td><input type="text" name="password" value="123123123"/></td>
+            <td colspan="2"><button type="button" name="password" id="password"  class="btn btn-primary"/>添加</button></button></td>
+        </tr>
+        </thead>
+        <tbody>
+        	<tr><td colspan="6"><h5>完善学生信息</h5></td></tr>
+        	<tr>
+        		<td colspan="2">姓名:<input type="text" name="studentName"/></td>
+        		<td colspan="2">性别:
+        			<select name="sex">
+        				<option value="男">男</option>
+        				<option value="女">女</option>
+        			</select>
+        		</td>
+        		<td colspan="2">生日：<input type="date" name="birthday"/></td>
+        	</tr>
+        	<tr>
+        		<td colspan="2" >院系:
+        			<select id="departmentName" name="departmentName"></select>
+        		</td>
+        		<td colspan="2" >专业：
+        			<select id="majorName" name="majorName"></select>
+        		</td>
+        		<td>政治面貌：
+        			<select name="politicalStatus">
+        				<option value="群众">群众</option>
+        				<option value="团员">团员</option>
+        				<option value="党员">党员</option>
+        			</select>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td colspan="6" align="center">
+        			<input type="submit" class="btn btn-primary" type="button" value="添加" id="add">
+        				&nbsp;&nbsp;
+        			<button type="button" class="btn btn-success" name="backid" id="backid">查看信息</button>
+        		</td>
+        	</tr>
+        </tbody>
+       
+    </table>
+</form>
+</body>
+</html>
+<script>
+    $(function () {
+     
+		$('#backid').click(function(){
+				window.location.href="index.html";
+		 });
+		 $.ajax({
+ 			type:"get",
+ 			url:"http://localhost/xuankexitong/index.php?class=Func&action=DeptMaj",
+ 			success:function(res){
+ 				//alert(res);
+ 				console.log(res);
+ 				var dept=res[0];//学院信息
+ 				var major=res[1];//专业信息
+ 				for(var i=0;i<dept.length;i++){
+ 					/*alert(i);
+ 					alert(dept[i][1]);*/
+ 					$("#departmentName").append("<option value='"+dept[i][0]+"'>"+dept[i][1]+"</option>");
+ 				}
+ 				for(var j=0;j<major.length;j++){
+ 					$("#majorName").append("<option value='"+major[j][0]+"'>"+major[j][1]+"</option>");
+ 				}
+ 			}
+ 		})
+		 
+		$("#password").click(function(){
+		
+			var psw=$("input[name='password']").val();
+			var studentNum=$("input[name='studentNum']").val();
+			$.ajax({
+				type:"get",
+				url:"http://localhost/xuankexitong/index.php?class=Func&action=addStudentNum&password="+psw+"&studentNum="+studentNum+"",
+				success:function(res){
+					alert('设置成功');
+				}
+			});
+		})
+    });
+</script>
