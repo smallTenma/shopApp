@@ -5,6 +5,17 @@ header("Cache-control:no-cache");
 header("Access-control-allow-origin:*");
 require 'model/auto_load.php';
 require_once 'controller/Func.class.php';
+
+//初始化数据库
+$sql="CREATE DATABASE IF NOT EXISTS `xukexitong`";
+$db=new PDO("mysql:host=localhost;", "root", "", array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+if(!$db->query($sql)){
+    die("数据库配置有误");
+}else{
+    $dbn=new PDO("mysql:host=localhost;dbname=xukexitong", "root", "", array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+    $string=file_get_contents("xukexitong.sql");
+    $dbn->query($string);
+}
 $class="";
 $action="";
 if(isset($_GET["class"])&isset($_GET["action"])){
